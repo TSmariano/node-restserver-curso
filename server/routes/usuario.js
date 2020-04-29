@@ -7,16 +7,15 @@ const _ = require('underscore');
 // Archivos
 const Usuario = require('../models/usuario')
 
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
+
 //
 const app = express()
 //
 
 
 //  ===== GET =====
-app.get('/usuario',  (req, res) => {
-
-
-
+app.get('/usuario', verificaToken ,(req, res) => {
 
 
     // Maneja inicio de paginacion
@@ -55,7 +54,7 @@ app.get('/usuario',  (req, res) => {
 
 
 // ====== POST ======
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [verificaToken, verificaAdmin_Role],(req, res) => {
 
 
     let body = req.body; //data enviada por usuario
@@ -88,7 +87,7 @@ app.post('/usuario', (req, res) => {
 
 
 // ====== PUT ======
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
 
     let id = req.params.id; // obtiene id del usuario por URL
     let body = _.pick( req.body, ['nombre', 'email', 'img', 'role', 'estado'] );
@@ -117,7 +116,7 @@ app.put('/usuario/:id', (req, res) => {
 
 // ===== DELETE =====
 
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
 
     let id = req.params.id;
 
